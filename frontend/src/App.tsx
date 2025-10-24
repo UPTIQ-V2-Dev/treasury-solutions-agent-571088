@@ -2,8 +2,17 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from '@/components/ui/sonner';
 import { ThemeProvider } from 'next-themes';
+import { AppLayout } from '@/components/AppLayout';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { UploadPage } from '@/pages/UploadPage';
+import { LoginPage } from '@/pages/LoginPage';
+import { SignupPage } from '@/pages/SignupPage';
+import { ClientsPage } from '@/pages/ClientsPage';
+import { ClientProfilePage } from '@/pages/ClientProfilePage';
+import { AnalysisPage } from '@/pages/AnalysisPage';
+import { RecommendationsPage } from '@/pages/RecommendationsPage';
+import { ProductsPage } from '@/pages/ProductsPage';
 import { ComingSoonPage } from '@/pages/ComingSoonPage';
 
 // Create a client instance
@@ -41,59 +50,141 @@ export const App = () => {
                 <Router>
                     <div className='min-h-screen bg-background font-sans antialiased'>
                         <Routes>
+                            {/* Auth routes */}
+                            <Route
+                                path='/login'
+                                element={<LoginPage />}
+                            />
+                            <Route
+                                path='/signup'
+                                element={<SignupPage />}
+                            />
+
+                            {/* Protected routes with layout */}
                             <Route
                                 path='/'
-                                element={<DashboardPage />}
+                                element={
+                                    <ProtectedRoute>
+                                        <AppLayout>
+                                            <DashboardPage />
+                                        </AppLayout>
+                                    </ProtectedRoute>
+                                }
                             />
                             <Route
                                 path='/upload'
-                                element={<UploadPage />}
+                                element={
+                                    <ProtectedRoute>
+                                        <AppLayout>
+                                            <UploadPage />
+                                        </AppLayout>
+                                    </ProtectedRoute>
+                                }
                             />
                             <Route
                                 path='/clients'
                                 element={
-                                    <ComingSoonPage
-                                        title='Client Management'
-                                        description='Manage your client relationships and view their analysis history.'
-                                    />
+                                    <ProtectedRoute>
+                                        <AppLayout>
+                                            <ClientsPage />
+                                        </AppLayout>
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path='/clients/:id'
+                                element={
+                                    <ProtectedRoute>
+                                        <AppLayout>
+                                            <ClientProfilePage />
+                                        </AppLayout>
+                                    </ProtectedRoute>
                                 }
                             />
                             <Route
                                 path='/analysis/:id'
                                 element={
-                                    <ComingSoonPage
-                                        title='Analysis Results'
-                                        description='View detailed treasury analysis results and recommendations.'
-                                    />
+                                    <ProtectedRoute>
+                                        <AppLayout>
+                                            <AnalysisPage />
+                                        </AppLayout>
+                                    </ProtectedRoute>
                                 }
                             />
                             <Route
                                 path='/recommendations/:id'
                                 element={
-                                    <ComingSoonPage
-                                        title='Treasury Recommendations'
-                                        description='Review and approve treasury product recommendations.'
-                                    />
+                                    <ProtectedRoute>
+                                        <AppLayout>
+                                            <RecommendationsPage />
+                                        </AppLayout>
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path='/products'
+                                element={
+                                    <ProtectedRoute>
+                                        <AppLayout>
+                                            <ProductsPage />
+                                        </AppLayout>
+                                    </ProtectedRoute>
                                 }
                             />
                             <Route
                                 path='/reports'
                                 element={
-                                    <ComingSoonPage
-                                        title='Report Generation'
-                                        description='Generate and download treasury analysis reports.'
-                                    />
+                                    <ProtectedRoute>
+                                        <AppLayout>
+                                            <ComingSoonPage
+                                                title='Report Generation'
+                                                description='Generate and download treasury analysis reports.'
+                                            />
+                                        </AppLayout>
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path='/reports/history'
+                                element={
+                                    <ProtectedRoute>
+                                        <AppLayout>
+                                            <ComingSoonPage
+                                                title='Report History'
+                                                description='View and manage previously generated reports.'
+                                            />
+                                        </AppLayout>
+                                    </ProtectedRoute>
                                 }
                             />
                             <Route
                                 path='/admin'
                                 element={
-                                    <ComingSoonPage
-                                        title='Admin Configuration'
-                                        description='Configure system settings and thresholds.'
-                                    />
+                                    <ProtectedRoute requireAdmin>
+                                        <AppLayout>
+                                            <ComingSoonPage
+                                                title='Admin Configuration'
+                                                description='Configure system settings and thresholds.'
+                                            />
+                                        </AppLayout>
+                                    </ProtectedRoute>
                                 }
                             />
+                            <Route
+                                path='/admin/audit'
+                                element={
+                                    <ProtectedRoute requireAdmin>
+                                        <AppLayout>
+                                            <ComingSoonPage
+                                                title='Audit Trail'
+                                                description='View system activity and user actions.'
+                                            />
+                                        </AppLayout>
+                                    </ProtectedRoute>
+                                }
+                            />
+
+                            {/* Fallback */}
                             <Route
                                 path='*'
                                 element={
