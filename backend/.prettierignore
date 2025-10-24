@@ -3,3 +3,4 @@ dist
 src/generated
 *handlebars
 node_modules
+*md
