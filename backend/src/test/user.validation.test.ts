@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { userValidation } from '../validations/index.ts';
 import { Role } from '../generated/prisma/index.js';
+import { userValidation } from '../validations/index.ts';
+import { describe, expect, it } from 'vitest';
 
 describe('User Validation', () => {
     describe('createUser', () => {

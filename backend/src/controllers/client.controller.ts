@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { clientService } from '../services/index.ts';
 import ApiError from '../utils/ApiError.ts';
 import catchAsyncWithAuth from '../utils/catchAsyncWithAuth.ts';

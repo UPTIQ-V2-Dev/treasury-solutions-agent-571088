@@ -50,6 +50,7 @@ const getClientsTool: MCPTool = {
     outputSchema: z.object({
         clients: z.array(clientSchema)
     }),
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     fn: async (inputs: {
         name?: string;
         status?: string;

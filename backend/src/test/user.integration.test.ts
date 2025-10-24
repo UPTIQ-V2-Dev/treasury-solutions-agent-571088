@@ -1,10 +1,10 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
-import request from 'supertest';
 import app from '../app.ts';
 import prisma from '../client.ts';
 import { Role } from '../generated/prisma/index.js';
-import { generateToken } from '../utils/jwt.ts';
 import { encryptPassword } from '../utils/encryption.ts';
+import { generateToken } from '../utils/jwt.ts';
+import request from 'supertest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
 describe('User Integration Tests', () => {
     let adminToken: string;
@@ -102,11 +102,7 @@ describe('User Integration Tests', () => {
                 role: 'USER'
             };
 
-            await request(app)
-                .post('/v1/users')
-                .set('Authorization', `Bearer ${userToken}`)
-                .send(userData)
-                .expect(403);
+            await request(app).post('/v1/users').set('Authorization', `Bearer ${userToken}`).send(userData).expect(403);
         });
 
         it('should fail with invalid email', async () => {
@@ -204,10 +200,7 @@ describe('User Integration Tests', () => {
         });
 
         it('should fail with non-admin access', async () => {
-            await request(app)
-                .get('/v1/users')
-                .set('Authorization', `Bearer ${userToken}`)
-                .expect(403);
+            await request(app).get('/v1/users').set('Authorization', `Bearer ${userToken}`).expect(403);
         });
     });
 
@@ -238,21 +231,15 @@ describe('User Integration Tests', () => {
             expect(response.body.id).toBe(regularUserId);
         });
 
-        it('should fail when user tries to get another user\'s details', async () => {
+        it("should fail when user tries to get another user's details", async () => {
             // Assuming adminUser has id 1 and regularUser has a different id
             const adminId = 1; // This would need to be the actual admin ID from setup
-            
-            await request(app)
-                .get(`/v1/users/${adminId}`)
-                .set('Authorization', `Bearer ${userToken}`)
-                .expect(403);
+
+            await request(app).get(`/v1/users/${adminId}`).set('Authorization', `Bearer ${userToken}`).expect(403);
         });
 
         it('should return 404 for non-existent user', async () => {
-            await request(app)
-                .get('/v1/users/99999')
-                .set('Authorization', `Bearer ${adminToken}`)
-                .expect(404);
+            await request(app).get('/v1/users/99999').set('Authorization', `Bearer ${adminToken}`).expect(404);
         });
     });
 
@@ -348,10 +335,7 @@ describe('User Integration Tests', () => {
         });
 
         it('should return 404 for non-existent user', async () => {
-            await request(app)
-                .delete('/v1/users/99999')
-                .set('Authorization', `Bearer ${adminToken}`)
-                .expect(404);
+            await request(app).delete('/v1/users/99999').set('Authorization', `Bearer ${adminToken}`).expect(404);
         });
 
         it('should fail with non-admin access', async () => {
@@ -364,16 +348,11 @@ describe('User Integration Tests', () => {
 
     describe('Authorization and Authentication', () => {
         it('should fail without authentication token', async () => {
-            await request(app)
-                .get('/v1/users')
-                .expect(401);
+            await request(app).get('/v1/users').expect(401);
         });
 
         it('should fail with invalid token', async () => {
-            await request(app)
-                .get('/v1/users')
-                .set('Authorization', 'Bearer invalid-token')
-                .expect(401);
+            await request(app).get('/v1/users').set('Authorization', 'Bearer invalid-token').expect(401);
         });
 
         it('should fail with expired token', async () => {

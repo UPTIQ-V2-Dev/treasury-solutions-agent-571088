@@ -99,13 +99,13 @@ const analyzeStatements = async (analyzeData: AnalyzeStatementData): Promise<Ana
     try {
         // Extract all transaction data from parsed results
         const allTransactions: TransactionData[] = [];
-        let totalTransactionCount = 0;
+        // let totalTransactionCount = 0;
         let dateRangeStart: Date | null = null;
         let dateRangeEnd: Date | null = null;
 
         for (const statementFile of statementFiles) {
             const parseResult = statementFile.ParseResult!;
-            totalTransactionCount += parseResult.totalTransactions;
+            // totalTransactionCount += parseResult.totalTransactions;
 
             // Track overall date range
             if (!dateRangeStart || parseResult.dateRangeStart < dateRangeStart) {
@@ -291,7 +291,7 @@ const calculateIdleBalanceAnalysis = (transactions: TransactionData[], threshold
 
     const idleBalances = balances.filter(b => b > threshold);
     const avgIdleAmount =
-        idleBalances.length > 0 ? idleBalances.reduce((sum, b) => sum - threshold, 0) / idleBalances.length : 0;
+        idleBalances.length > 0 ? idleBalances.reduce(sum => sum - threshold, 0) / idleBalances.length : 0;
 
     const daysWithIdleBalance = idleBalances.length;
 

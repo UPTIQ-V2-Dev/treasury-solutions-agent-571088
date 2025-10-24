@@ -130,7 +130,7 @@ const createAuditEntry = async (auditData: {
     ipAddress: string;
     userAgent?: string;
 }): Promise<AuditEntry> => {
-    return prisma.auditEntry.create({
+    return await prisma.auditEntry.create({
         data: auditData
     });
 };

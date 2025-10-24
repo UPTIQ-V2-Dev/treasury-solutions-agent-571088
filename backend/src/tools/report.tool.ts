@@ -176,6 +176,7 @@ const getTemplatesTool: MCPTool = {
     outputSchema: z.object({
         templates: z.array(reportTemplateSchema)
     }),
+    // eslint-disable-next-line require-await
     fn: async () => {
         const templates = reportService.getTemplates();
         return { templates };
@@ -192,6 +193,7 @@ const getTemplateTool: MCPTool = {
     outputSchema: z.object({
         template: reportTemplateSchema.nullable()
     }),
+    // eslint-disable-next-line require-await
     fn: async (inputs: { templateId: string }) => {
         const template = reportService.getTemplate(inputs.templateId);
         return { template };

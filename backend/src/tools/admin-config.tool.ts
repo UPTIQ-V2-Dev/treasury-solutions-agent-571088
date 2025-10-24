@@ -1,3 +1,4 @@
+/* eslint-disable require-await */
 import { adminConfigService } from '../services/index.ts';
 import { MCPTool } from '../types/mcp.ts';
 import { z } from 'zod';

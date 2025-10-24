@@ -286,7 +286,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/workspace/projects/3b13f12b-7920-4f23-b5c9-b2e889a16019/01cda2c1-044f-412b-9ff9-b07dd1d8c5f1/backend/src/generated/prisma",
+      "value": "/home/vpn/Downloads/treasury/backend/src/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -295,12 +295,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "linux-musl-openssl-3.0.x",
+        "value": "debian-openssl-3.0.x",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/workspace/projects/3b13f12b-7920-4f23-b5c9-b2e889a16019/01cda2c1-044f-412b-9ff9-b07dd1d8c5f1/backend/src/prisma/schema.prisma",
+    "sourceFilePath": "/home/vpn/Downloads/treasury/backend/src/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -314,7 +314,6 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {

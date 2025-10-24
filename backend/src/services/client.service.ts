@@ -14,7 +14,7 @@ const createClient = async (
     relationshipManager: string,
     status?: string
 ): Promise<Client> => {
-    return prisma.client.create({
+    return await prisma.client.create({
         data: {
             name,
             accountIds,
@@ -62,7 +62,7 @@ const queryClients = async <Key extends keyof Client>(
  * @returns {Promise<Client[]>}
  */
 const getAllClients = async (): Promise<Client[]> => {
-    return prisma.client.findMany({
+    return await prisma.client.findMany({
         orderBy: { createdAt: 'desc' }
     });
 };

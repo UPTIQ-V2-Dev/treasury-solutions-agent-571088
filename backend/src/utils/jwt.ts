@@ -1,5 +1,5 @@
-import { tokenService } from '../services/index.ts';
 import { TokenType } from '../generated/prisma/index.js';
+import { tokenService } from '../services/index.ts';
 import moment from 'moment';
 
 /**

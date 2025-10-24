@@ -213,6 +213,7 @@ const parseCSVStatement = (content: string): StatementParseResult => {
  * @returns {StatementParseResult}
  */
 const parsePDFStatement = (buffer: Buffer): StatementParseResult => {
+    console.log({ buffer });
     // This is a simplified implementation
     // In a real application, you would use a PDF parsing library like pdf-parse or pdf2pic
 

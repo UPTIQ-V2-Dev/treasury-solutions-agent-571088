@@ -1,3 +1,4 @@
+/* eslint-disable require-await */
 import prisma from '../client.ts';
 import { Report } from '../generated/prisma/index.js';
 import { getInstance } from '../storage/main.ts';

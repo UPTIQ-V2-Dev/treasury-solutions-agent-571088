@@ -1,9 +1,9 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { userService } from '../services/index.ts';
-import { Role } from '../generated/prisma/index.js';
-import ApiError from '../utils/ApiError.ts';
 import prisma from '../client.ts';
+import { Role } from '../generated/prisma/index.js';
+import { userService } from '../services/index.ts';
+import ApiError from '../utils/ApiError.ts';
 import { encryptPassword } from '../utils/encryption.ts';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('../client.ts');
 vi.mock('../utils/encryption.ts');
@@ -71,9 +71,7 @@ describe('User Service', () => {
 
             mockPrisma.user.findUnique.mockResolvedValue({ id: 1, email: userData.email });
 
-            await expect(
-                userService.createUser(userData.email, userData.password)
-            ).rejects.toThrow(ApiError);
+            await expect(userService.createUser(userData.email, userData.password)).rejects.toThrow(ApiError);
         });
     });
 
@@ -185,11 +183,11 @@ describe('User Service', () => {
         it('should update user successfully', async () => {
             const userId = 1;
             const updateData = { name: 'Updated Name', email: 'updated@example.com' };
-            
+
             const existingUser = { id: userId, email: 'old@example.com', name: 'Old Name' };
-            const updatedUser = { 
-                id: userId, 
-                email: updateData.email, 
+            const updatedUser = {
+                id: userId,
+                email: updateData.email,
                 name: updateData.name,
                 role: 'USER',
                 isEmailVerified: true,
@@ -197,9 +195,7 @@ describe('User Service', () => {
                 updatedAt: new Date()
             };
 
-            mockPrisma.user.findUnique
-                .mockResolvedValueOnce(existingUser)
-                .mockResolvedValueOnce(null); // No existing user with new email
+            mockPrisma.user.findUnique.mockResolvedValueOnce(existingUser).mockResolvedValueOnce(null); // No existing user with new email
             mockPrisma.user.update.mockResolvedValue(updatedUser);
 
             const result = await userService.updateUserById(userId, updateData);
@@ -215,34 +211,28 @@ describe('User Service', () => {
         it('should throw error if user not found', async () => {
             mockPrisma.user.findUnique.mockResolvedValue(null);
 
-            await expect(
-                userService.updateUserById(999, { name: 'Test' })
-            ).rejects.toThrow(ApiError);
+            await expect(userService.updateUserById(999, { name: 'Test' })).rejects.toThrow(ApiError);
         });
 
         it('should throw error if email already taken by another user', async () => {
             const userId = 1;
             const updateData = { email: 'taken@example.com' };
-            
+
             const existingUser = { id: userId, email: 'old@example.com', name: 'Old Name' };
             const userWithSameEmail = { id: 2 };
 
-            mockPrisma.user.findUnique
-                .mockResolvedValueOnce(existingUser)
-                .mockResolvedValueOnce(userWithSameEmail);
+            mockPrisma.user.findUnique.mockResolvedValueOnce(existingUser).mockResolvedValueOnce(userWithSameEmail);
 
-            await expect(
-                userService.updateUserById(userId, updateData)
-            ).rejects.toThrow(ApiError);
+            await expect(userService.updateUserById(userId, updateData)).rejects.toThrow(ApiError);
         });
 
         it('should encrypt password if provided', async () => {
             const userId = 1;
             const updateData = { password: 'newpassword123' };
-            
+
             const existingUser = { id: userId, email: 'test@example.com', name: 'Test' };
-            const updatedUser = { 
-                id: userId, 
+            const updatedUser = {
+                id: userId,
                 email: 'test@example.com',
                 name: 'Test',
                 role: 'USER',
@@ -294,9 +284,7 @@ describe('User Service', () => {
         it('should throw error if user not found', async () => {
             mockPrisma.user.findUnique.mockResolvedValue(null);
 
-            await expect(
-                userService.deleteUserById(999)
-            ).rejects.toThrow(ApiError);
+            await expect(userService.deleteUserById(999)).rejects.toThrow(ApiError);
         });
     });
 });

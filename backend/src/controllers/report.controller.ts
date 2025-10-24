@@ -70,6 +70,7 @@ const deleteReport = catchAsyncWithAuth(async (req, res) => {
     res.status(httpStatus.NO_CONTENT).send();
 });
 
+// eslint-disable-next-line require-await
 const getTemplates = catchAsyncWithAuth(async (req, res) => {
     const templates = reportService.getTemplates();
     res.send({ templates });
