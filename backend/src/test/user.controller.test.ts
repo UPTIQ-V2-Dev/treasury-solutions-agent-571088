@@ -1,7 +1,7 @@
 import { userController } from '../controllers/index.ts';
 import { userService } from '../services/index.ts';
+import { Role } from '../generated/prisma/index.js';
 import httpStatus from 'http-status';
-import request from 'supertest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('../services/index.ts');
@@ -34,7 +34,7 @@ describe('User Controller', () => {
                 email: 'test@example.com',
                 password: 'password123',
                 name: 'Test User',
-                role: 'USER'
+                role: Role.USER
             };
 
             const mockUser = {
@@ -43,8 +43,8 @@ describe('User Controller', () => {
                 name: userData.name,
                 role: userData.role,
                 isEmailVerified: false,
-                createdAt: '2024-10-24T10:00:00Z',
-                updatedAt: '2024-10-24T10:00:00Z',
+                createdAt: new Date('2024-10-24T10:00:00Z'),
+                updatedAt: new Date('2024-10-24T10:00:00Z'),
                 password: 'encrypted_password'
             };
 
@@ -77,7 +77,7 @@ describe('User Controller', () => {
         it('should return paginated users', async () => {
             const queryParams = {
                 name: 'John',
-                role: 'USER',
+                role: Role.USER,
                 sortBy: 'name:asc',
                 page: 1,
                 limit: 10
@@ -89,17 +89,17 @@ describe('User Controller', () => {
                         id: 1,
                         email: 'john@example.com',
                         name: 'John Doe',
-                        role: 'USER',
+                        role: Role.USER,
                         isEmailVerified: true,
-                        createdAt: '2024-10-24T10:00:00Z',
-                        updatedAt: '2024-10-24T10:00:00Z'
+                        createdAt: new Date('2024-10-24T10:00:00Z'),
+                        updatedAt: new Date('2024-10-24T10:00:00Z')
                     }
                 ],
                 page: 1,
                 limit: 10,
                 totalPages: 1,
                 totalResults: 1
-            };
+            } as any;
 
             mockRequest.validatedQuery = queryParams;
             mockUserService.queryUsers.mockResolvedValue(mockResult);
@@ -107,7 +107,7 @@ describe('User Controller', () => {
             await userController.getUsers(mockRequest, mockResponse, mockNext);
 
             expect(mockUserService.queryUsers).toHaveBeenCalledWith(
-                { name: 'John', role: 'USER' },
+                { name: 'John', role: Role.USER },
                 { sortBy: 'name:asc', limit: 10, page: 1 }
             );
             expect(mockResponse.send).toHaveBeenCalledWith(mockResult);
@@ -120,10 +120,10 @@ describe('User Controller', () => {
                 id: 1,
                 email: 'test@example.com',
                 name: 'Test User',
-                role: 'USER',
+                role: Role.USER,
                 isEmailVerified: true,
-                createdAt: '2024-10-24T10:00:00Z',
-                updatedAt: '2024-10-24T10:00:00Z',
+                createdAt: new Date('2024-10-24T10:00:00Z'),
+                updatedAt: new Date('2024-10-24T10:00:00Z'),
                 password: 'encrypted_password'
             };
 
@@ -166,10 +166,10 @@ describe('User Controller', () => {
                 id: 1,
                 email: 'test@example.com',
                 name: 'Updated Name',
-                role: 'USER',
+                role: Role.USER,
                 isEmailVerified: true,
-                createdAt: '2024-10-24T10:00:00Z',
-                updatedAt: '2024-10-24T10:30:00Z',
+                createdAt: new Date('2024-10-24T10:00:00Z'),
+                updatedAt: new Date('2024-10-24T10:30:00Z'),
                 password: 'encrypted_password'
             };
 
@@ -213,10 +213,10 @@ describe('User Controller', () => {
                 id: 1,
                 email: 'test@example.com',
                 name: 'Test User',
-                role: 'USER',
+                role: Role.USER,
                 isEmailVerified: true,
-                createdAt: '2024-10-24T10:00:00Z',
-                updatedAt: '2024-10-24T10:00:00Z',
+                createdAt: new Date('2024-10-24T10:00:00Z'),
+                updatedAt: new Date('2024-10-24T10:00:00Z'),
                 password: 'encrypted_password'
             };
 

@@ -287,7 +287,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/vpn/Downloads/treasury/backend/src/generated/prisma",
+      "value": "/workspace/projects/3b13f12b-7920-4f23-b5c9-b2e889a16019/01cda2c1-044f-412b-9ff9-b07dd1d8c5f1/backend/src/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -296,12 +296,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "debian-openssl-3.0.x",
+        "value": "linux-musl-openssl-3.0.x",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/vpn/Downloads/treasury/backend/src/prisma/schema.prisma",
+    "sourceFilePath": "/workspace/projects/3b13f12b-7920-4f23-b5c9-b2e889a16019/01cda2c1-044f-412b-9ff9-b07dd1d8c5f1/backend/src/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -363,8 +363,8 @@ exports.PrismaClient = PrismaClient
 Object.assign(exports, Prisma)
 
 // file annotations for bundling tools to include these files
-path.join(__dirname, "libquery_engine-debian-openssl-3.0.x.so.node");
-path.join(process.cwd(), "src/generated/prisma/libquery_engine-debian-openssl-3.0.x.so.node")
+path.join(__dirname, "libquery_engine-linux-musl-openssl-3.0.x.so.node");
+path.join(process.cwd(), "src/generated/prisma/libquery_engine-linux-musl-openssl-3.0.x.so.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
 path.join(process.cwd(), "src/generated/prisma/schema.prisma")

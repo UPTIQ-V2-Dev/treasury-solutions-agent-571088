@@ -5,10 +5,23 @@ import ApiError from '../utils/ApiError.ts';
 import { encryptPassword } from '../utils/encryption.ts';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('../client.ts');
+// Mock Prisma client
+vi.mock('../client.ts', () => ({
+    default: {
+        user: {
+            create: vi.fn(),
+            findMany: vi.fn(),
+            findUnique: vi.fn(),
+            update: vi.fn(),
+            delete: vi.fn(),
+            count: vi.fn()
+        }
+    }
+}));
+
 vi.mock('../utils/encryption.ts');
 
-const mockPrisma = vi.mocked(prisma);
+const mockPrisma = prisma as any;
 const mockEncryptPassword = vi.mocked(encryptPassword);
 
 describe('User Service', () => {
@@ -77,7 +90,7 @@ describe('User Service', () => {
 
     describe('queryUsers', () => {
         it('should return paginated users with filters', async () => {
-            const filter = { name: 'John', role: 'USER' };
+            const filter = { name: 'John', role: Role.USER };
             const options = { page: 1, limit: 10, sortBy: 'name:asc' };
 
             const mockUsers = [
@@ -85,7 +98,7 @@ describe('User Service', () => {
                     id: 1,
                     email: 'john@example.com',
                     name: 'John Doe',
-                    role: 'USER',
+                    role: Role.USER,
                     isEmailVerified: true,
                     createdAt: new Date(),
                     updatedAt: new Date()
@@ -108,14 +121,14 @@ describe('User Service', () => {
             expect(mockPrisma.user.count).toHaveBeenCalledWith({
                 where: {
                     name: { contains: 'John', mode: 'insensitive' },
-                    role: 'USER'
+                    role: Role.USER
                 }
             });
 
             expect(mockPrisma.user.findMany).toHaveBeenCalledWith({
                 where: {
                     name: { contains: 'John', mode: 'insensitive' },
-                    role: 'USER'
+                    role: Role.USER
                 },
                 select: expect.any(Object),
                 skip: 0,
@@ -153,7 +166,7 @@ describe('User Service', () => {
                 id: 1,
                 email: 'test@example.com',
                 name: 'Test User',
-                role: 'USER',
+                role: Role.USER,
                 isEmailVerified: true,
                 createdAt: new Date(),
                 updatedAt: new Date()
@@ -189,7 +202,7 @@ describe('User Service', () => {
                 id: userId,
                 email: updateData.email,
                 name: updateData.name,
-                role: 'USER',
+                role: Role.USER,
                 isEmailVerified: true,
                 createdAt: new Date(),
                 updatedAt: new Date()
@@ -235,7 +248,7 @@ describe('User Service', () => {
                 id: userId,
                 email: 'test@example.com',
                 name: 'Test',
-                role: 'USER',
+                role: Role.USER,
                 isEmailVerified: true,
                 createdAt: new Date(),
                 updatedAt: new Date()
@@ -263,7 +276,7 @@ describe('User Service', () => {
                 id: userId,
                 email: 'test@example.com',
                 name: 'Test User',
-                role: 'USER',
+                role: Role.USER,
                 isEmailVerified: true,
                 createdAt: new Date(),
                 updatedAt: new Date(),

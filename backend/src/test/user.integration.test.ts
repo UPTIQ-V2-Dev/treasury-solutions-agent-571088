@@ -9,7 +9,6 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 describe('User Integration Tests', () => {
     let adminToken: string;
     let userToken: string;
-    let testUserId: number;
     let regularUserId: number;
 
     beforeAll(async () => {
@@ -90,8 +89,6 @@ describe('User Integration Tests', () => {
             expect(response.body).toHaveProperty('createdAt');
             expect(response.body).toHaveProperty('updatedAt');
             expect(response.body).not.toHaveProperty('password');
-
-            testUserId = response.body.id;
         });
 
         it('should fail with non-admin access', async () => {
