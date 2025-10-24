@@ -118,10 +118,10 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
             <div className='text-center text-sm text-muted-foreground mt-4'>
                 <p>Demo credentials:</p>
                 <p>
-                    <strong>Email:</strong> user@example.com
+                    <strong>User:</strong> user@example.com / password
                 </p>
                 <p>
-                    <strong>Password:</strong> password
+                    <strong>Admin:</strong> admin@example.com / password
                 </p>
             </div>
         </form>

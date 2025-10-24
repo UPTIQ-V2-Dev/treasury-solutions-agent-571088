@@ -18,7 +18,10 @@ export const LoginPage = () => {
     }, [isAuthenticated, navigate, from]);
 
     const handleLoginSuccess = () => {
-        navigate(from, { replace: true });
+        // Small delay to ensure auth state is updated
+        setTimeout(() => {
+            navigate(from, { replace: true });
+        }, 100);
     };
 
     return (

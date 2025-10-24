@@ -8,7 +8,27 @@ export const authService = {
         if (import.meta.env.VITE_USE_MOCK_DATA === 'true') {
             console.log('--- MOCK API: login ---', credentials);
             await mockApiDelay();
-            return mockAuthResponse;
+
+            // Validate mock credentials
+            if (credentials.email === 'user@example.com' && credentials.password === 'password') {
+                setAuthData(mockAuthResponse);
+                return mockAuthResponse;
+            } else if (credentials.email === 'admin@example.com' && credentials.password === 'password') {
+                const adminAuthResponse = {
+                    ...mockAuthResponse,
+                    user: {
+                        ...mockAuthResponse.user,
+                        id: 2,
+                        email: 'admin@example.com',
+                        name: 'Jane Smith',
+                        role: 'ADMIN' as const
+                    }
+                };
+                setAuthData(adminAuthResponse);
+                return adminAuthResponse;
+            } else {
+                throw new Error('Invalid credentials');
+            }
         }
         const response = await api.post('/auth/login', credentials);
         console.log('response in login', response);
@@ -20,6 +40,7 @@ export const authService = {
         if (import.meta.env.VITE_USE_MOCK_DATA === 'true') {
             console.log('--- MOCK API: register ---', userData);
             await mockApiDelay();
+            setAuthData(mockAuthResponse);
             return mockAuthResponse;
         }
         const response = await api.post('/auth/register', userData);
@@ -31,6 +52,7 @@ export const authService = {
         if (import.meta.env.VITE_USE_MOCK_DATA === 'true') {
             console.log('--- MOCK API: refreshToken ---');
             await mockApiDelay();
+            setAuthData(mockAuthResponse);
             return mockAuthResponse;
         }
         const response = await api.post('/auth/refresh');
@@ -42,6 +64,7 @@ export const authService = {
         if (import.meta.env.VITE_USE_MOCK_DATA === 'true') {
             console.log('--- MOCK API: logout ---');
             await mockApiDelay();
+            clearAuthData();
             return;
         }
         const refreshToken = getStoredRefreshToken();
