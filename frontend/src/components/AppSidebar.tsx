@@ -1,15 +1,4 @@
-import {
-    BarChart3,
-    Building2,
-    FileText,
-    Home,
-    Package,
-    Settings,
-    TrendingUp,
-    Upload,
-    Users,
-    History
-} from 'lucide-react';
+import { Building2, FileText, Home, Package, Settings, Upload, Users, History } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import {
     Sidebar,
@@ -54,16 +43,6 @@ const clientItems: NavItem[] = [
 ];
 
 const analysisItems: NavItem[] = [
-    {
-        title: 'Analysis Results',
-        url: '/analysis',
-        icon: BarChart3
-    },
-    {
-        title: 'Recommendations',
-        url: '/recommendations',
-        icon: TrendingUp
-    },
     {
         title: 'Product Catalog',
         url: '/products',
