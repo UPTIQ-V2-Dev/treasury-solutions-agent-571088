@@ -6,7 +6,9 @@ import type {
     DashboardMetrics,
     UploadStatus,
     ParseResult,
-    Transaction
+    Transaction,
+    ReportMetadata,
+    ReportTemplate
 } from '@/types/treasury';
 
 // Mock Clients
@@ -430,6 +432,135 @@ export const mockDashboardMetrics: DashboardMetrics = {
         }
     ]
 };
+
+// Mock Report Templates
+export const mockReportTemplates: ReportTemplate[] = [
+    {
+        id: 'template-1',
+        name: 'Standard Analysis Report',
+        description: 'Comprehensive analysis report with key findings and recommendations',
+        format: 'pdf',
+        sections: [
+            'Executive Summary',
+            'Client Overview',
+            'Cash Flow Analysis',
+            'Treasury Recommendations',
+            'Implementation Timeline'
+        ],
+        isCustomizable: true
+    },
+    {
+        id: 'template-2',
+        name: 'Executive Summary',
+        description: 'High-level overview for C-suite executives',
+        format: 'pdf',
+        sections: ['Key Findings', 'Strategic Recommendations', 'Financial Impact', 'Next Steps'],
+        isCustomizable: false
+    },
+    {
+        id: 'template-3',
+        name: 'Detailed Technical Report',
+        description: 'In-depth technical analysis with all transaction data',
+        format: 'excel',
+        sections: [
+            'Transaction Analysis',
+            'Cash Flow Patterns',
+            'Liquidity Metrics',
+            'Product Recommendations',
+            'Risk Assessment',
+            'Implementation Guide'
+        ],
+        isCustomizable: true
+    }
+];
+
+// Mock Report History
+export const mockReportHistory: ReportMetadata[] = [
+    {
+        id: 'report-1',
+        title: 'ACME Corporation - Q4 2024 Analysis Report',
+        analysisId: 'analysis-1',
+        clientId: '1',
+        clientName: 'ACME Corporation',
+        format: 'pdf',
+        template: 'Standard Analysis Report',
+        createdAt: '2024-10-22T14:30:00Z',
+        createdBy: 'Sarah Johnson',
+        fileSize: 2485760,
+        downloadCount: 3,
+        status: 'ready'
+    },
+    {
+        id: 'report-2',
+        title: 'TechStart Solutions - Executive Summary',
+        analysisId: 'analysis-2',
+        clientId: '2',
+        clientName: 'TechStart Solutions',
+        format: 'pdf',
+        template: 'Executive Summary',
+        createdAt: '2024-10-21T11:15:00Z',
+        createdBy: 'Mike Chen',
+        fileSize: 1024000,
+        downloadCount: 8,
+        status: 'ready'
+    },
+    {
+        id: 'report-3',
+        title: 'Global Manufacturing Ltd - Technical Analysis',
+        analysisId: 'analysis-3',
+        clientId: '3',
+        clientName: 'Global Manufacturing Ltd',
+        format: 'excel',
+        template: 'Detailed Technical Report',
+        createdAt: '2024-10-20T16:45:00Z',
+        createdBy: 'Emily Rodriguez',
+        fileSize: 5242880,
+        downloadCount: 2,
+        status: 'ready'
+    },
+    {
+        id: 'report-4',
+        title: 'ACME Corporation - Monthly Summary',
+        analysisId: 'analysis-4',
+        clientId: '1',
+        clientName: 'ACME Corporation',
+        format: 'pdf',
+        template: 'Executive Summary',
+        createdAt: '2024-10-18T09:30:00Z',
+        createdBy: 'Sarah Johnson',
+        fileSize: 896000,
+        downloadCount: 5,
+        status: 'ready'
+    },
+    {
+        id: 'report-5',
+        title: 'Regional Retail Chain - Analysis Report',
+        analysisId: 'analysis-5',
+        clientId: '4',
+        clientName: 'Regional Retail Chain',
+        format: 'pdf',
+        template: 'Standard Analysis Report',
+        createdAt: '2024-10-15T13:20:00Z',
+        createdBy: 'David Kim',
+        fileSize: 3145728,
+        downloadCount: 1,
+        status: 'ready'
+    },
+    {
+        id: 'report-6',
+        title: 'TechStart Solutions - Processing Report',
+        analysisId: 'analysis-6',
+        clientId: '2',
+        clientName: 'TechStart Solutions',
+        format: 'pdf',
+        template: 'Standard Analysis Report',
+        createdAt: '2024-10-24T10:00:00Z',
+        createdBy: 'Mike Chen',
+        fileSize: 0,
+        downloadCount: 0,
+        status: 'generating'
+    }
+];
 
 // Mock API delay utility (reuse from existing mockData.ts pattern)
 export const mockApiDelay = (ms: number = 1500): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));

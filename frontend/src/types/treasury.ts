@@ -205,6 +205,48 @@ export interface CreateReportRequest {
     includeDataTables?: boolean;
 }
 
+export interface ReportTemplate {
+    id: string;
+    name: string;
+    description: string;
+    format: 'pdf' | 'html' | 'excel';
+    sections: string[];
+    isCustomizable: boolean;
+}
+
+export interface ReportConfig {
+    templateId: string;
+    format: 'pdf' | 'html' | 'excel';
+    includeCharts: boolean;
+    includeDataTables: boolean;
+    includeRecommendations: boolean;
+    customSections?: string[];
+}
+
+export type ExportFormat = 'pdf' | 'html' | 'excel';
+
+export interface ReportMetadata {
+    id: string;
+    title: string;
+    analysisId: string;
+    clientId: string;
+    clientName: string;
+    format: ExportFormat;
+    template: string;
+    createdAt: string;
+    createdBy: string;
+    fileSize: number;
+    downloadCount: number;
+    status: 'generating' | 'ready' | 'error';
+}
+
+export interface ReportListResponse {
+    reports: ReportMetadata[];
+    totalCount: number;
+    page: number;
+    totalPages: number;
+}
+
 // Dashboard Types
 export interface DashboardMetrics {
     totalClients: number;

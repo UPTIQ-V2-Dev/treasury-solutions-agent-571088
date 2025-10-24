@@ -8,7 +8,9 @@ import {
     mockRecommendations,
     mockTreasuryProducts,
     mockTransactions,
-    mockUploadStatus
+    mockUploadStatus,
+    mockReportHistory,
+    mockReportTemplates
 } from '@/data/treasuryMockData';
 import type {
     AnalysisData,
@@ -19,6 +21,8 @@ import type {
     GenerateRecommendationsRequest,
     ParseResult,
     Recommendation,
+    ReportListResponse,
+    ReportTemplate,
     Transaction,
     TreasuryProduct,
     UploadStatementRequest,
@@ -274,5 +278,56 @@ export const treasuryService = {
             responseType: 'blob'
         });
         return response.data;
+    },
+
+    getReportHistory: async (page: number = 1, limit: number = 10, clientId?: string): Promise<ReportListResponse> => {
+        if (import.meta.env.VITE_USE_MOCK_DATA === 'true') {
+            console.log('--- MOCK API: getReportHistory ---', { page, limit, clientId });
+            await mockApiDelay();
+
+            let filteredReports = mockReportHistory;
+            if (clientId) {
+                filteredReports = mockReportHistory.filter(r => r.clientId === clientId);
+            }
+
+            const startIndex = (page - 1) * limit;
+            const endIndex = startIndex + limit;
+            const paginatedReports = filteredReports.slice(startIndex, endIndex);
+
+            return {
+                reports: paginatedReports,
+                totalCount: filteredReports.length,
+                page,
+                totalPages: Math.ceil(filteredReports.length / limit)
+            };
+        }
+        const queryParams = new URLSearchParams({
+            page: page.toString(),
+            limit: limit.toString()
+        });
+        if (clientId) {
+            queryParams.append('clientId', clientId);
+        }
+        const response = await api.get(`/reports/history?${queryParams}`);
+        return response.data;
+    },
+
+    getReportTemplates: async (): Promise<ReportTemplate[]> => {
+        if (import.meta.env.VITE_USE_MOCK_DATA === 'true') {
+            console.log('--- MOCK API: getReportTemplates ---');
+            await mockApiDelay();
+            return mockReportTemplates;
+        }
+        const response = await api.get('/reports/templates');
+        return response.data;
+    },
+
+    deleteReport: async (reportId: string): Promise<void> => {
+        if (import.meta.env.VITE_USE_MOCK_DATA === 'true') {
+            console.log('--- MOCK API: deleteReport ---', reportId);
+            await mockApiDelay();
+            return;
+        }
+        await api.delete(`/reports/${reportId}`);
     }
 };

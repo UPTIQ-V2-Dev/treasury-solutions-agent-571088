@@ -4,7 +4,9 @@ import {
     mockDashboardMetrics,
     mockAnalysisData,
     mockTreasuryProducts,
-    mockRecommendations
+    mockRecommendations,
+    mockReportHistory,
+    mockReportTemplates
 } from '@/data/treasuryMockData';
 
 export const handlers = [
@@ -231,5 +233,39 @@ export const handlers = [
                 'Content-Type': 'application/pdf'
             }
         });
+    }),
+
+    // Report History
+    http.get('/api/v1/reports/history', ({ request }) => {
+        const url = new URL(request.url);
+        const page = parseInt(url.searchParams.get('page') || '1');
+        const limit = parseInt(url.searchParams.get('limit') || '10');
+        const clientId = url.searchParams.get('clientId');
+
+        let filteredReports = mockReportHistory;
+        if (clientId) {
+            filteredReports = mockReportHistory.filter(r => r.clientId === clientId);
+        }
+
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
+        const paginatedReports = filteredReports.slice(startIndex, endIndex);
+
+        return HttpResponse.json({
+            reports: paginatedReports,
+            totalCount: filteredReports.length,
+            page,
+            totalPages: Math.ceil(filteredReports.length / limit)
+        });
+    }),
+
+    // Report Templates
+    http.get('/api/v1/reports/templates', () => {
+        return HttpResponse.json(mockReportTemplates);
+    }),
+
+    // Delete Report
+    http.delete('/api/v1/reports/:reportId', ({ params }) => {
+        return new HttpResponse(null, { status: 204 });
     })
 ];

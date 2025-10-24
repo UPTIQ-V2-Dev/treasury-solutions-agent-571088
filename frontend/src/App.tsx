@@ -14,6 +14,8 @@ import { AnalysisPage } from '@/pages/AnalysisPage';
 import { RecommendationsPage } from '@/pages/RecommendationsPage';
 import { ProductsPage } from '@/pages/ProductsPage';
 import { ComingSoonPage } from '@/pages/ComingSoonPage';
+import { ReportGenerationPage } from '@/pages/ReportGenerationPage';
+import { ReportHistoryPage } from '@/pages/ReportHistoryPage';
 
 // Create a client instance
 const queryClient = new QueryClient({
@@ -136,10 +138,17 @@ export const App = () => {
                                 element={
                                     <ProtectedRoute>
                                         <AppLayout>
-                                            <ComingSoonPage
-                                                title='Report Generation'
-                                                description='Generate and download treasury analysis reports.'
-                                            />
+                                            <ReportGenerationPage />
+                                        </AppLayout>
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path='/reports/generate'
+                                element={
+                                    <ProtectedRoute>
+                                        <AppLayout>
+                                            <ReportGenerationPage />
                                         </AppLayout>
                                     </ProtectedRoute>
                                 }
@@ -149,10 +158,7 @@ export const App = () => {
                                 element={
                                     <ProtectedRoute>
                                         <AppLayout>
-                                            <ComingSoonPage
-                                                title='Report History'
-                                                description='View and manage previously generated reports.'
-                                            />
+                                            <ReportHistoryPage />
                                         </AppLayout>
                                     </ProtectedRoute>
                                 }
