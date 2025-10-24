@@ -266,3 +266,63 @@ export interface DashboardMetrics {
         productCategory: string;
     }>;
 }
+
+// Admin Configuration Types
+export interface SystemConfig {
+    thresholds?: {
+        idleCashThreshold: number;
+        liquidityWarningThreshold: number;
+        lowBalanceThreshold: number;
+        highRiskThreshold: number;
+    };
+    features?: {
+        enableAutoAnalysis: boolean;
+        enableEmailNotifications: boolean;
+        enableRecommendationEngine: boolean;
+        enableAdvancedReports: boolean;
+    };
+    integrations?: {
+        bankApiEnabled: boolean;
+        webhooksEnabled: boolean;
+        apiRateLimit: number;
+        maxFileSize: number;
+    };
+    security?: {
+        sessionTimeout: number;
+        passwordExpiry: number;
+        requireMfa: boolean;
+        auditLogRetention: number;
+    };
+}
+
+export interface AuditEntry {
+    id: string;
+    userId: string;
+    userName: string;
+    userEmail: string;
+    action: string;
+    resource: string;
+    resourceId?: string;
+    details: string;
+    severity: 'low' | 'medium' | 'high';
+    ipAddress: string;
+    userAgent?: string;
+    timestamp: string;
+}
+
+export interface AuditLogsResponse {
+    logs: AuditEntry[];
+    totalCount: number;
+    page: number;
+    totalPages: number;
+}
+
+export interface AuditLogsRequest {
+    page?: number;
+    limit?: number;
+    search?: string;
+    userId?: string;
+    action?: string;
+    dateFrom?: string;
+    dateTo?: string;
+}

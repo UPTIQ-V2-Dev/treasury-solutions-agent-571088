@@ -13,9 +13,10 @@ import { ClientProfilePage } from '@/pages/ClientProfilePage';
 import { AnalysisPage } from '@/pages/AnalysisPage';
 import { RecommendationsPage } from '@/pages/RecommendationsPage';
 import { ProductsPage } from '@/pages/ProductsPage';
-import { ComingSoonPage } from '@/pages/ComingSoonPage';
 import { ReportGenerationPage } from '@/pages/ReportGenerationPage';
 import { ReportHistoryPage } from '@/pages/ReportHistoryPage';
+import { AdminConfigPage } from '@/pages/AdminConfigPage';
+import { AuditTrailPage } from '@/pages/AuditTrailPage';
 
 // Create a client instance
 const queryClient = new QueryClient({
@@ -168,10 +169,17 @@ export const App = () => {
                                 element={
                                     <ProtectedRoute requireAdmin>
                                         <AppLayout>
-                                            <ComingSoonPage
-                                                title='Admin Configuration'
-                                                description='Configure system settings and thresholds.'
-                                            />
+                                            <AdminConfigPage />
+                                        </AppLayout>
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path='/admin/config'
+                                element={
+                                    <ProtectedRoute requireAdmin>
+                                        <AppLayout>
+                                            <AdminConfigPage />
                                         </AppLayout>
                                     </ProtectedRoute>
                                 }
@@ -181,10 +189,7 @@ export const App = () => {
                                 element={
                                     <ProtectedRoute requireAdmin>
                                         <AppLayout>
-                                            <ComingSoonPage
-                                                title='Audit Trail'
-                                                description='View system activity and user actions.'
-                                            />
+                                            <AuditTrailPage />
                                         </AppLayout>
                                     </ProtectedRoute>
                                 }

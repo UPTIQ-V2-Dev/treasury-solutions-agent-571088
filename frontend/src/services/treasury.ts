@@ -15,6 +15,9 @@ import {
 import type {
     AnalysisData,
     AnalyzeStatementRequest,
+    AuditEntry,
+    AuditLogsRequest,
+    AuditLogsResponse,
     Client,
     CreateReportRequest,
     DashboardMetrics,
@@ -23,6 +26,7 @@ import type {
     Recommendation,
     ReportListResponse,
     ReportTemplate,
+    SystemConfig,
     Transaction,
     TreasuryProduct,
     UploadStatementRequest,
@@ -329,5 +333,207 @@ export const treasuryService = {
             return;
         }
         await api.delete(`/reports/${reportId}`);
+    },
+
+    // Admin configuration endpoints
+    getSystemConfig: async (): Promise<SystemConfig> => {
+        if (import.meta.env.VITE_USE_MOCK_DATA === 'true') {
+            console.log('--- MOCK API: getSystemConfig ---');
+            await mockApiDelay();
+            return {
+                thresholds: {
+                    idleCashThreshold: 100000,
+                    liquidityWarningThreshold: 50000,
+                    lowBalanceThreshold: 10000,
+                    highRiskThreshold: 500000
+                },
+                features: {
+                    enableAutoAnalysis: true,
+                    enableEmailNotifications: true,
+                    enableRecommendationEngine: true,
+                    enableAdvancedReports: true
+                },
+                integrations: {
+                    bankApiEnabled: false,
+                    webhooksEnabled: false,
+                    apiRateLimit: 1000,
+                    maxFileSize: 50
+                },
+                security: {
+                    sessionTimeout: 60,
+                    passwordExpiry: 90,
+                    requireMfa: false,
+                    auditLogRetention: 365
+                }
+            };
+        }
+        const response = await api.get('/admin/config');
+        return response.data;
+    },
+
+    updateSystemConfig: async (config: SystemConfig): Promise<SystemConfig> => {
+        if (import.meta.env.VITE_USE_MOCK_DATA === 'true') {
+            console.log('--- MOCK API: updateSystemConfig ---', config);
+            await mockApiDelay();
+            return config;
+        }
+        const response = await api.put('/admin/config', config);
+        return response.data;
+    },
+
+    resetConfigToDefaults: async (): Promise<SystemConfig> => {
+        if (import.meta.env.VITE_USE_MOCK_DATA === 'true') {
+            console.log('--- MOCK API: resetConfigToDefaults ---');
+            await mockApiDelay();
+            return {
+                thresholds: {
+                    idleCashThreshold: 100000,
+                    liquidityWarningThreshold: 50000,
+                    lowBalanceThreshold: 10000,
+                    highRiskThreshold: 500000
+                },
+                features: {
+                    enableAutoAnalysis: true,
+                    enableEmailNotifications: true,
+                    enableRecommendationEngine: true,
+                    enableAdvancedReports: false
+                },
+                integrations: {
+                    bankApiEnabled: false,
+                    webhooksEnabled: false,
+                    apiRateLimit: 1000,
+                    maxFileSize: 25
+                },
+                security: {
+                    sessionTimeout: 60,
+                    passwordExpiry: 90,
+                    requireMfa: false,
+                    auditLogRetention: 365
+                }
+            };
+        }
+        const response = await api.post('/admin/config/reset');
+        return response.data;
+    },
+
+    // Audit trail endpoints
+    getAuditLogs: async (request: AuditLogsRequest = {}): Promise<AuditLogsResponse> => {
+        if (import.meta.env.VITE_USE_MOCK_DATA === 'true') {
+            console.log('--- MOCK API: getAuditLogs ---', request);
+            await mockApiDelay();
+
+            const mockAuditLogs: AuditEntry[] = [
+                {
+                    id: 'audit-1',
+                    userId: 'user-1',
+                    userName: 'John Admin',
+                    userEmail: 'admin@example.com',
+                    action: 'login',
+                    resource: 'authentication',
+                    details: 'User logged into the system',
+                    severity: 'low',
+                    ipAddress: '192.168.1.1',
+                    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                    timestamp: new Date(Date.now() - 1000 * 60 * 10).toISOString()
+                },
+                {
+                    id: 'audit-2',
+                    userId: 'user-2',
+                    userName: 'Jane User',
+                    userEmail: 'user@example.com',
+                    action: 'upload',
+                    resource: 'statement',
+                    resourceId: 'stmt-123',
+                    details: 'Uploaded bank statement file: october_statement.pdf',
+                    severity: 'medium',
+                    ipAddress: '192.168.1.2',
+                    timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString()
+                },
+                {
+                    id: 'audit-3',
+                    userId: 'user-1',
+                    userName: 'John Admin',
+                    userEmail: 'admin@example.com',
+                    action: 'config_change',
+                    resource: 'system_config',
+                    details: 'Updated idle cash threshold from $50,000 to $100,000',
+                    severity: 'high',
+                    ipAddress: '192.168.1.1',
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString()
+                },
+                {
+                    id: 'audit-4',
+                    userId: 'user-2',
+                    userName: 'Jane User',
+                    userEmail: 'user@example.com',
+                    action: 'delete',
+                    resource: 'report',
+                    resourceId: 'rpt-456',
+                    details: 'Deleted report: Q3 Analysis Summary',
+                    severity: 'medium',
+                    ipAddress: '192.168.1.2',
+                    timestamp: new Date(Date.now() - 1000 * 60 * 90).toISOString()
+                },
+                {
+                    id: 'audit-5',
+                    userId: 'user-3',
+                    userName: 'Bob Manager',
+                    userEmail: 'manager@example.com',
+                    action: 'security',
+                    resource: 'authentication',
+                    details: 'Failed login attempt - incorrect password',
+                    severity: 'high',
+                    ipAddress: '192.168.1.100',
+                    timestamp: new Date(Date.now() - 1000 * 60 * 120).toISOString()
+                }
+            ];
+
+            const page = request.page || 1;
+            const limit = request.limit || 25;
+
+            return {
+                logs: mockAuditLogs,
+                totalCount: mockAuditLogs.length,
+                page,
+                totalPages: Math.ceil(mockAuditLogs.length / limit)
+            };
+        }
+
+        const queryParams = new URLSearchParams({
+            page: (request.page || 1).toString(),
+            limit: (request.limit || 25).toString()
+        });
+
+        if (request.search) queryParams.append('search', request.search);
+        if (request.userId) queryParams.append('userId', request.userId);
+        if (request.action) queryParams.append('action', request.action);
+        if (request.dateFrom) queryParams.append('dateFrom', request.dateFrom);
+        if (request.dateTo) queryParams.append('dateTo', request.dateTo);
+
+        const response = await api.get(`/admin/audit?${queryParams}`);
+        return response.data;
+    },
+
+    exportAuditLogs: async (request: AuditLogsRequest = {}): Promise<Blob> => {
+        if (import.meta.env.VITE_USE_MOCK_DATA === 'true') {
+            console.log('--- MOCK API: exportAuditLogs ---', request);
+            await mockApiDelay();
+            // In a real app, this would return a CSV blob
+            const csvContent =
+                'timestamp,user,action,resource,details,severity,ip_address\n2024-01-15T10:30:00Z,admin@example.com,login,authentication,User logged in,low,192.168.1.1';
+            return new Blob([csvContent], { type: 'text/csv' });
+        }
+
+        const queryParams = new URLSearchParams();
+        if (request.search) queryParams.append('search', request.search);
+        if (request.userId) queryParams.append('userId', request.userId);
+        if (request.action) queryParams.append('action', request.action);
+        if (request.dateFrom) queryParams.append('dateFrom', request.dateFrom);
+        if (request.dateTo) queryParams.append('dateTo', request.dateTo);
+
+        const response = await api.get(`/admin/audit/export?${queryParams}`, {
+            responseType: 'blob'
+        });
+        return response.data;
     }
 };
