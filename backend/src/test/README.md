@@ -34,7 +34,7 @@ pnpm test:coverage
 Example test structure:
 
 ```typescript
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 describe('MyFunction', () => {
     it('should do something', () => {

@@ -31,8 +31,8 @@ export default router;
  * @swagger
  * /users:
  *   post:
- *     summary: Create a user
- *     description: Only admins can create other users.
+ *     summary: Create a user (Admin only)
+ *     description: Create a new user. Only admins can create other users.
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
@@ -60,20 +60,35 @@ export default router;
  *                 minLength: 8
  *                 description: At least one number and one letter
  *               role:
- *                  type: string
- *                  enum: [user, admin]
+ *                 type: string
+ *                 enum: [USER, ADMIN]
  *             example:
- *               name: fake name
- *               email: fake@example.com
- *               password: password1
- *               role: user
+ *               name: Jane Doe
+ *               email: jane@example.com
+ *               password: password123
+ *               role: USER
  *     responses:
  *       "201":
  *         description: Created
  *         content:
  *           application/json:
  *             schema:
- *                $ref: '#/components/schemas/User'
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 email:
+ *                   type: string
+ *                 name:
+ *                   type: string
+ *                 role:
+ *                   type: string
+ *                 isEmailVerified:
+ *                   type: boolean
+ *                 createdAt:
+ *                   type: string
+ *                 updatedAt:
+ *                   type: string
  *       "400":
  *         $ref: '#/components/responses/DuplicateEmail'
  *       "401":
@@ -82,8 +97,8 @@ export default router;
  *         $ref: '#/components/responses/Forbidden'
  *
  *   get:
- *     summary: Get all users
- *     description: Only admins can retrieve all users.
+ *     summary: Get paginated list of users with filtering
+ *     description: Get paginated list of users with filtering. Admin access required.
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
@@ -92,12 +107,12 @@ export default router;
  *         name: name
  *         schema:
  *           type: string
- *         description: User name
+ *         description: User name filter
  *       - in: query
  *         name: role
  *         schema:
  *           type: string
- *         description: User role
+ *         description: User role filter
  *       - in: query
  *         name: sortBy
  *         schema:
@@ -109,7 +124,7 @@ export default router;
  *           type: integer
  *           minimum: 1
  *         default: 10
- *         description: Maximum number of users
+ *         description: Maximum number of users per page
  *       - in: query
  *         name: page
  *         schema:
@@ -128,7 +143,22 @@ export default router;
  *                 results:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/User'
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       email:
+ *                         type: string
+ *                       name:
+ *                         type: string
+ *                       role:
+ *                         type: string
+ *                       isEmailVerified:
+ *                         type: boolean
+ *                       createdAt:
+ *                         type: string
+ *                       updatedAt:
+ *                         type: string
  *                 page:
  *                   type: integer
  *                   example: 1
@@ -149,16 +179,16 @@ export default router;
 
 /**
  * @swagger
- * /users/{id}:
+ * /users/{userId}:
  *   get:
  *     summary: Get a user
- *     description: Logged in users can fetch only their own user information. Only admins can fetch other users.
+ *     description: Get specific user details.
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: userId
  *         required: true
  *         schema:
  *           type: string
@@ -169,7 +199,22 @@ export default router;
  *         content:
  *           application/json:
  *             schema:
- *                $ref: '#/components/schemas/User'
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 email:
+ *                   type: string
+ *                 name:
+ *                   type: string
+ *                 role:
+ *                   type: string
+ *                 isEmailVerified:
+ *                   type: boolean
+ *                 createdAt:
+ *                   type: string
+ *                 updatedAt:
+ *                   type: string
  *       "401":
  *         $ref: '#/components/responses/Unauthorized'
  *       "403":
@@ -179,13 +224,13 @@ export default router;
  *
  *   patch:
  *     summary: Update a user
- *     description: Logged in users can only update their own information. Only admins can update other users.
+ *     description: Update user information.
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: userId
  *         required: true
  *         schema:
  *           type: string
@@ -209,8 +254,8 @@ export default router;
  *                 minLength: 8
  *                 description: At least one number and one letter
  *             example:
- *               name: fake name
- *               email: fake@example.com
+ *               name: John Smith
+ *               email: john.smith@example.com
  *               password: password1
  *     responses:
  *       "200":
@@ -218,7 +263,22 @@ export default router;
  *         content:
  *           application/json:
  *             schema:
- *                $ref: '#/components/schemas/User'
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 email:
+ *                   type: string
+ *                 name:
+ *                   type: string
+ *                 role:
+ *                   type: string
+ *                 isEmailVerified:
+ *                   type: boolean
+ *                 createdAt:
+ *                   type: string
+ *                 updatedAt:
+ *                   type: string
  *       "400":
  *         $ref: '#/components/responses/DuplicateEmail'
  *       "401":
@@ -230,20 +290,28 @@ export default router;
  *
  *   delete:
  *     summary: Delete a user
- *     description: Logged in users can delete only themselves. Only admins can delete other users.
+ *     description: Delete a user account.
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: userId
  *         required: true
  *         schema:
  *           type: string
  *         description: User id
  *     responses:
  *       "200":
- *         description: No content
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User deleted successfully
  *       "401":
  *         $ref: '#/components/responses/Unauthorized'
  *       "403":

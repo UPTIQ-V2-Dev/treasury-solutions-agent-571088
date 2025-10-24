@@ -88,11 +88,11 @@ const generateAuthTokens = async (user: { id: number }): Promise<AuthTokensRespo
     return {
         access: {
             token: accessToken,
-            expires: accessTokenExpires.toDate()
+            expires: accessTokenExpires.toISOString()
         },
         refresh: {
             token: refreshToken,
-            expires: refreshTokenExpires.toDate()
+            expires: refreshTokenExpires.toISOString()
         }
     };
 };

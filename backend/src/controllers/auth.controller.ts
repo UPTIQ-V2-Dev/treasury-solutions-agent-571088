@@ -1,33 +1,48 @@
 import { User } from '../generated/prisma/index.js';
 import { authService, emailService, tokenService, userService } from '../services/index.ts';
 import catchAsync from '../utils/catchAsync.ts';
-import catchAsyncWithAuth from '../utils/catchAsyncWithAuth.ts';
 import exclude from '../utils/exclude.ts';
 import httpStatus from 'http-status';
 
 const register = catchAsync(async (req, res) => {
-    const { email, password } = req.body;
-    const user = await userService.createUser(email, password);
-    const userWithoutPassword = exclude(user, ['password', 'createdAt', 'updatedAt']);
+    const { name, email, password } = req.body;
+    const user = await userService.createUser(email, password, name);
+    const userWithoutPassword = exclude(user, ['password']);
     const tokens = await tokenService.generateAuthTokens(user);
-    res.status(httpStatus.CREATED).send({ user: userWithoutPassword, tokens });
+
+    // Ensure dates are in ISO string format
+    const formattedUser = {
+        ...userWithoutPassword,
+        createdAt: userWithoutPassword.createdAt.toISOString(),
+        updatedAt: userWithoutPassword.updatedAt.toISOString()
+    };
+
+    res.status(httpStatus.CREATED).send({ user: formattedUser, tokens });
 });
 
 const login = catchAsync(async (req, res) => {
     const { email, password } = req.body;
     const user = await authService.loginUserWithEmailAndPassword(email, password);
     const tokens = await tokenService.generateAuthTokens(user);
-    res.send({ user, tokens });
+
+    // Ensure dates are in ISO string format
+    const formattedUser = {
+        ...user,
+        createdAt: user.createdAt.toISOString(),
+        updatedAt: user.updatedAt.toISOString()
+    };
+
+    res.send({ user: formattedUser, tokens });
 });
 
-const logout = catchAsyncWithAuth(async (req, res) => {
+const logout = catchAsync(async (req, res) => {
     await authService.logout(req.body.refreshToken);
     res.status(httpStatus.NO_CONTENT).send();
 });
 
-const refreshTokens = catchAsyncWithAuth(async (req, res) => {
+const refreshTokens = catchAsync(async (req, res) => {
     const tokens = await authService.refreshAuth(req.body.refreshToken);
-    res.send({ ...tokens });
+    res.send({ tokens });
 });
 
 const forgotPassword = catchAsync(async (req, res) => {

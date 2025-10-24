@@ -24,6 +24,7 @@ model User {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   Token           Token[]
+  AuditEntry      AuditEntry[]
 }
 
 model Token {
@@ -35,6 +36,129 @@ model Token {
   createdAt   DateTime  @default(now())
   user        User      @relation(fields: [userId], references: [id])
   userId      Int
+}
+
+model Client {
+  id                 String   @id @default(cuid())
+  name               String
+  accountIds         String[]
+  relationshipManager String
+  status             String   @default("active")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  StatementFile      StatementFile[]
+  Analysis           Analysis[]
+  Report             Report[]
+}
+
+model StatementFile {
+  id        String   @id @default(cuid())
+  filename  String
+  type      String
+  size      Int
+  uploadedAt DateTime @default(now())
+  status    String   @default("uploading")
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id])
+  ParseResult ParseResult?
+}
+
+model ParseResult {
+  id              String        @id @default(cuid())
+  statementFileId String        @unique
+  statementFile   StatementFile @relation(fields: [statementFileId], references: [id])
+  totalTransactions Int
+  dateRangeStart   DateTime
+  dateRangeEnd     DateTime
+  accounts         Json
+  status           String
+  errors           Json?
+  createdAt        DateTime      @default(now())
+}
+
+model Analysis {
+  id               String   @id @default(cuid())
+  clientId         String
+  client           Client   @relation(fields: [clientId], references: [id])
+  statementFileIds String[]
+  createdAt        DateTime @default(now())
+  status           String   @default("processing")
+  summary          Json
+  liquidityMetrics Json
+  spendingBreakdown Json
+  idleBalanceAnalysis Json
+  Recommendation   Recommendation[]
+  Report           Report[]
+}
+
+model TreasuryProduct {
+  id              String @id @default(cuid())
+  name            String @unique
+  category        String
+  description     String
+  features        String[]
+  eligibilityRules Json
+  benefits        Json
+  pricing         Json
+  isActive        Boolean @default(true)
+  Recommendation  Recommendation[]
+}
+
+model Recommendation {
+  id               String         @id @default(cuid())
+  analysisId       String
+  analysis         Analysis       @relation(fields: [analysisId], references: [id])
+  productId        String
+  product          TreasuryProduct @relation(fields: [productId], references: [id])
+  priority         String
+  rationale        String
+  dataPoints       String[]
+  benefitProjection Json
+  status           String         @default("pending")
+  createdAt        DateTime       @default(now())
+  approvedBy       String?
+  approvedAt       DateTime?
+}
+
+model Report {
+  id           String   @id @default(cuid())
+  title        String
+  analysisId   String
+  analysis     Analysis @relation(fields: [analysisId], references: [id])
+  clientId     String
+  client       Client   @relation(fields: [clientId], references: [id])
+  format       String
+  template     String
+  createdAt    DateTime @default(now())
+  createdBy    String
+  fileSize     Int      @default(0)
+  downloadCount Int     @default(0)
+  status       String   @default("generating")
+  filePath     String?
+}
+
+model SystemConfig {
+  id           String @id @default(cuid())
+  configKey    String @unique
+  configValue  Json
+  updatedAt    DateTime @updatedAt
+  updatedBy    String
+}
+
+model AuditEntry {
+  id         String   @id @default(cuid())
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  userName   String
+  userEmail  String
+  action     String
+  resource   String
+  resourceId String?
+  details    String
+  severity   String
+  ipAddress  String
+  userAgent  String?
+  timestamp  DateTime @default(now())
 }
 
 enum Role {

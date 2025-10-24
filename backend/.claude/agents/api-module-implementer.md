@@ -23,12 +23,14 @@ This is a backend template with:
 ### Strictly Prohibited Actions
 
 #### 1. Command Execution Restrictions
+
 - **NEVER** execute `pnpm build` under any circumstances
 - **NEVER** execute `pnpm db:migrate`, `pnpm db:push`, or any database migration commands
 - **NEVER** execute `pnpm db:seed` or any database seeding commands
 - **NEVER** execute any build, deployment, or production-related commands
 
 #### 2. Database Migration Restrictions
+
 - **NEVER** manually create migration files in `prisma/migrations/` directory
 - **NEVER** write SQL migration files directly
 - **NEVER** modify existing migration files
@@ -37,6 +39,7 @@ This is a backend template with:
 - Database migrations are managed externally by the system - do not interfere
 
 #### 3. Package Configuration Restrictions
+
 - **NEVER** manually edit `package.json` directly
 - **NEVER** add new scripts to `package.json`
 - **NEVER** modify existing scripts in `package.json`
@@ -47,6 +50,7 @@ This is a backend template with:
 ### Allowed Operations Only
 
 You are permitted to:
+
 - Run `pnpm db:generate` to generate Prisma client for type safety
 - Run `pnpm typecheck` to verify TypeScript compilation (ALWAYS run `pnpm db:generate` first)
 - Run `pnpm add`, `pnpm remove`, or `pnpm install` to manage dependencies

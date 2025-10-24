@@ -10,12 +10,11 @@ const agentApi = axios.create({
 const callAgent = async (params: {
     event: string;
     payload?: any;
-    documents?: { signedUrl: string; fileName?: string; mimeType?: string }[];
     agentId: string;
     config: AgentConfig['config'];
     eventConfig?: AgentConfig['triggerEvents'][number];
 }) => {
-    const { agentId, event, payload, config, eventConfig, documents } = params;
+    const { agentId, event, payload, config, eventConfig } = params;
     let message = `Event ${event} happened.`;
     try {
         // Passing output schema in message
@@ -28,7 +27,7 @@ const callAgent = async (params: {
         // calling agent trigger api
         const res = await agentApi.post(
             `/agent-executor/agents/${agentId}/trigger`,
-            { message, payload, executionMode: eventConfig?.type || 'async', documents },
+            { message, payload, executionMode: eventConfig?.type || 'async' },
             {
                 headers: {
                     'app-id': config.appId,
@@ -51,12 +50,7 @@ const callAgent = async (params: {
     }
 };
 
-const emitEvent = (params: {
-    event: string;
-    payload?: any;
-    documents?: { signedUrl: string; fileName?: string; mimeType?: string }[];
-    agentId: string;
-}) => {
+const emitEvent = (params: { event: string; payload?: any; agentId: string }) => {
     const agent = AGENT_CONFIGS.find(a => a.id === params.agentId);
     if (!agent) return;
     const eventConfig = agent.triggerEvents?.find(e => e.name === params.event);

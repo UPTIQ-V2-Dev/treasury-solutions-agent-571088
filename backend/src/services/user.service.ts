@@ -33,27 +33,67 @@ const createUser = async (email: string, password: string, name?: string, role: 
  * @returns {Promise<QueryResult>}
  */
 const queryUsers = async <Key extends keyof User>(
-    filter: object,
+    filter: any,
     options: {
         limit?: number;
         page?: number;
         sortBy?: string;
         sortType?: 'asc' | 'desc';
     },
-    keys: Key[] = ['id', 'email', 'name', 'password', 'role', 'isEmailVerified', 'createdAt', 'updatedAt'] as Key[]
-): Promise<Pick<User, Key>[]> => {
+    keys: Key[] = ['id', 'email', 'name', 'role', 'isEmailVerified', 'createdAt', 'updatedAt'] as Key[]
+): Promise<{
+    results: Pick<User, Key>[];
+    page: number;
+    limit: number;
+    totalPages: number;
+    totalResults: number;
+}> => {
     const page = options.page ?? 1;
     const limit = options.limit ?? 10;
-    const sortBy = options.sortBy;
-    const sortType = options.sortType ?? 'desc';
-    const users = await prisma.user.findMany({
-        where: filter,
-        select: keys.reduce((obj, k) => ({ ...obj, [k]: true }), {}),
-        skip: page * limit,
-        take: limit,
-        orderBy: sortBy ? { [sortBy]: sortType } : undefined
+
+    // Build where clause with proper filtering
+    const whereClause: any = {};
+    if (filter.name) {
+        whereClause.name = {
+            contains: filter.name,
+            mode: 'insensitive'
+        };
+    }
+    if (filter.role) {
+        whereClause.role = filter.role;
+    }
+
+    // Parse sortBy parameter in format: field:direction
+    let orderBy = undefined;
+    if (options.sortBy) {
+        const [sortField, sortDirection] = options.sortBy.split(':');
+        const direction = sortDirection === 'asc' ? 'asc' : 'desc';
+        orderBy = { [sortField]: direction };
+    }
+
+    // Get total count for pagination
+    const totalResults = await prisma.user.count({
+        where: whereClause
     });
-    return users as Pick<User, Key>[];
+
+    const totalPages = Math.ceil(totalResults / limit);
+    const skip = (page - 1) * limit;
+
+    const users = await prisma.user.findMany({
+        where: whereClause,
+        select: keys.reduce((obj, k) => ({ ...obj, [k]: true }), {}),
+        skip: skip,
+        take: limit,
+        orderBy: orderBy
+    });
+
+    return {
+        results: users as Pick<User, Key>[],
+        page,
+        limit,
+        totalPages,
+        totalResults
+    };
 };
 
 /**
@@ -97,15 +137,24 @@ const getUserByEmail = async <Key extends keyof User>(
 const updateUserById = async <Key extends keyof User>(
     userId: number,
     updateBody: Prisma.UserUpdateInput,
-    keys: Key[] = ['id', 'email', 'name', 'role'] as Key[]
+    keys: Key[] = ['id', 'email', 'name', 'role', 'isEmailVerified', 'createdAt', 'updatedAt'] as Key[]
 ): Promise<Pick<User, Key> | null> => {
     const user = await getUserById(userId, ['id', 'email', 'name']);
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
     }
-    if (updateBody.email && (await getUserByEmail(updateBody.email as string))) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+    if (updateBody.email) {
+        const existingUser = await getUserByEmail(updateBody.email as string, ['id']);
+        if (existingUser && existingUser.id !== userId) {
+            throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+        }
     }
+
+    // Encrypt password if provided
+    if (updateBody.password) {
+        updateBody.password = await encryptPassword(updateBody.password as string);
+    }
+
     const updatedUser = await prisma.user.update({
         where: { id: user.id },
         data: updateBody,

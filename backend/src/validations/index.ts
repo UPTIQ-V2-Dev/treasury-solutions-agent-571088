@@ -1,2 +1,11 @@
 export { default as authValidation } from './auth.validation.ts';
 export { default as userValidation } from './user.validation.ts';
+export { default as clientValidation } from './client.validation.ts';
+export { default as dashboardValidation } from './dashboard.validation.ts';
+export { default as statementValidation } from './statement.validation.ts';
+export { default as analysisValidation } from './analysis.validation.ts';
+export { default as treasuryProductValidation } from './treasury-product.validation.ts';
+export { default as recommendationValidation } from './recommendation.validation.ts';
+export { default as reportValidation } from './report.validation.ts';
+export { default as adminConfigValidation } from './admin-config.validation.ts';
+export { default as adminValidation } from './admin.validation.ts';

@@ -61,20 +61,20 @@ The application includes comprehensive testing capabilities:
 ### Test Types
 
 1. **Unit Tests**:
-   - Test individual functions and classes in isolation
-   - Mock dependencies for focused testing
-   - Controller tests should mock service layer
-   - Service tests should mock database operations
+    - Test individual functions and classes in isolation
+    - Mock dependencies for focused testing
+    - Controller tests should mock service layer
+    - Service tests should mock database operations
 
 2. **Integration Tests**:
-   - Test API endpoints end-to-end
-   - Use Supertest to simulate HTTP requests
-   - Test authentication flows and middleware behavior
+    - Test API endpoints end-to-end
+    - Use Supertest to simulate HTTP requests
+    - Test authentication flows and middleware behavior
 
 3. **Validation Tests**:
-   - Test input validation schemas
-   - Verify schema validation rejects invalid inputs
-   - Test validation error messages
+    - Test input validation schemas
+    - Verify schema validation rejects invalid inputs
+    - Test validation error messages
 
 ### Testing Best Practices
 
@@ -172,11 +172,9 @@ await storageInstance.downloadDocument({
 const exists = await storageInstance.documentExists({
     key
 });
-await storageInstance.DownloadSignedUrl(
-    {
-        key
-    }
-)
+await storageInstance.DownloadSignedUrl({
+    key
+});
 ```
 
 ## Common Commands
