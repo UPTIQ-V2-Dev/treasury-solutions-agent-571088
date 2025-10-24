@@ -136,7 +136,7 @@ export const ClientsPage = () => {
                             <DialogDescription>Create a new client profile for treasury analysis.</DialogDescription>
                         </DialogHeader>
                         <div className='space-y-4'>
-                            <div>
+                            <div className='space-y-2'>
                                 <Label htmlFor='clientName'>Client Name</Label>
                                 <Input
                                     id='clientName'
@@ -145,7 +145,7 @@ export const ClientsPage = () => {
                                     placeholder='Enter client name'
                                 />
                             </div>
-                            <div>
+                            <div className='space-y-2'>
                                 <Label htmlFor='relationshipManager'>Relationship Manager</Label>
                                 <Input
                                     id='relationshipManager'
@@ -154,7 +154,7 @@ export const ClientsPage = () => {
                                     placeholder='Enter relationship manager name'
                                 />
                             </div>
-                            <div>
+                            <div className='space-y-2'>
                                 <Label htmlFor='accountId'>Initial Account ID</Label>
                                 <Input
                                     id='accountId'
@@ -168,7 +168,7 @@ export const ClientsPage = () => {
                                     placeholder='Enter account identifier'
                                 />
                             </div>
-                            <div>
+                            <div className='space-y-2'>
                                 <Label htmlFor='status'>Status</Label>
                                 <Select
                                     value={newClient.status}
